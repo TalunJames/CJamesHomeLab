@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carter's Home Server Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-900 to-gray-800 text-white p-8 font-sans">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-5xl font-extrabold text-center mb-14 drop-shadow-lg">Carter's Home Server Dashboard</h1>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Repeat this block for each link -->
+      <a href="https://app.plex.tv/desktop/#!" class="rounded-2xl bg-blue-600 hover:bg-gray-300 transition p-6 text-white shadow-xl hover:text-blue-900" target="_blank">
+        <h2 class="text-2xl font-bold">Plex</h2>
+        <p class="mt-2 text-sm">Stream movies, shows, and media</p>
+      </a>
+	      <a href="http://100.88.152.64:30041/photos" class="rounded-2xl bg-blue-600 hover:bg-gray-300 transition p-6 text-white shadow-xl hover:text-blue-900" target="_blank">
+        <h2 class="text-2xl font-bold">Immich</h2>
+        <p class="mt-2 text-sm">*Paid Users Only* Store and view personal photos, videos</p>
+      </a>
+	      <a href="http://100.88.152.64:30111/login" class="rounded-2xl bg-blue-600 hover:bg-gray-300 transition p-6 text-white shadow-xl hover:text-blue-900" target="_blank">
+        <h2 class="text-2xl font-bold">Mealie</h2>
+        <p class="mt-2 text-sm">*Paid Users Only* Recipie Management</p>
+      </a>
+	      <a href="http://your-local-ip:32400/web" class="rounded-2xl bg-blue-600 hover:bg-gray-300 transition p-6 text-white shadow-xl hover:text-blue-900" target="_blank">
+        <h2 class="text-2xl font-bold">Tailscale</h2>
+        <p class="mt-2 text-sm">VPN Needed to access Overseerr, Immich and Mealie</p>
+      </a>
+	      <a href="http://your-local-ip:32400/web" class="rounded-2xl bg-blue-600 hover:bg-gray-300 transition p-6 text-white shadow-xl hover:text-blue-900" target="_blank">
+        <h2 class="text-2xl font-bold">Guides and Tips</h2>
+        <p class="mt-2 text-sm">Gudies and tips on server apps</p>
+      </a>
+	   <a href="http://your-local-ip:32400/web" class="rounded-2xl bg-red-600 hover:bg-red-400 transition p-6 text-white shadow-xl hover:text-white" target="_blank">
+  <h2 class="text-2xl font-bold">Submit an Issue</h2>
+  <p class="mt-2 text-sm">Flag an issue to be resolved</p>
+</a>
+
+
+  </div>
+ <!-- Two smaller buttons centered -->
+  <div class="w-full flex justify-center mt-8">
+    <div class="grid grid-cols-2 gap-4 max-w-md">
+      <a href="http://100.88.152.64:30002/" class="rounded-xl bg-yellow-500 hover:bg-yellow-400 transition p-4 text-white shadow-md text-center text-sm font-semibold" target="_blank">
+        Overseerr Requests
+      </a>
+      <a href="https://discord.gg/your-invite-code" class="rounded-xl bg-indigo-500 hover:bg-indigo-400 transition p-4 text-white shadow-md text-center text-sm font-semibold" target="_blank">
+        Join Discord
+      </a>
+    </div>
+  </div>
+</div>
+
+  <footer class="text-center mt-16 text-sm text-white/80">
+    <a href="https://your-announcements-link.com" class="hover:underline hover:text-white" target="_blank">View latest updates and announcements</a>
+  </footer>
+</body>
+</html>
