@@ -1,59 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Carter's Home Server Dashboard</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeLab Hub - Your Personal Cloud</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="min-h-screen bg-gradient-to-br from-blue-900 to-gray-800 text-white p-8 font-sans">
-  <div class="max-w-5xl mx-auto">
-    <h1 class="text-5xl font-extrabold text-center mb-14 drop-shadow-lg">Carter's Home Server Dashboard</h1>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-      <!-- Repeat this block for each link -->
-      <a href="https://app.plex.tv/desktop/#!" class="rounded-2xl bg-blue-600 hover:bg-gray-300 transition p-6 text-white shadow-xl hover:text-blue-900" target="_blank">
-        <h2 class="text-2xl font-bold">Plex</h2>
-        <p class="mt-2 text-sm">Stream movies, shows, and media</p>
-      </a>
-	      <a href="http://100.88.152.64:30041/photos" class="rounded-2xl bg-blue-600 hover:bg-gray-300 transition p-6 text-white shadow-xl hover:text-blue-900" target="_blank">
-        <h2 class="text-2xl font-bold">Immich</h2>
-        <p class="mt-2 text-sm">*Paid Users Only* Store and view personal photos, videos</p>
-      </a>
-	      <a href="http://100.88.152.64:30111/login" class="rounded-2xl bg-blue-600 hover:bg-gray-300 transition p-6 text-white shadow-xl hover:text-blue-900" target="_blank">
-        <h2 class="text-2xl font-bold">Mealie</h2>
-        <p class="mt-2 text-sm">*Paid Users Only* Recipie Management</p>
-      </a>
-	      <a href="http://your-local-ip:32400/web" class="rounded-2xl bg-blue-600 hover:bg-gray-300 transition p-6 text-white shadow-xl hover:text-blue-900" target="_blank">
-        <h2 class="text-2xl font-bold">Tailscale</h2>
-        <p class="mt-2 text-sm">VPN Needed to access Overseerr, Immich and Mealie</p>
-      </a>
-	      <a href="http://your-local-ip:32400/web" class="rounded-2xl bg-blue-600 hover:bg-gray-300 transition p-6 text-white shadow-xl hover:text-blue-900" target="_blank">
-        <h2 class="text-2xl font-bold">Guides and Tips</h2>
-        <p class="mt-2 text-sm">Gudies and tips on server apps</p>
-      </a>
-	   <a href="https://docs.google.com/forms/d/e/1FAIpQLSestOmL3bzYTsp8h4d95CZCxxX0Phu59jxdRBCJ6DsD8VVD1w/viewform?usp=dialog" class="rounded-2xl bg-red-600 hover:bg-red-400 transition p-6 text-white shadow-xl hover:text-white" target="_blank">
-  <h2 class="text-2xl font-bold">Submit an Issue</h2>
-  <p class="mt-2 text-sm">Flag an issue to be resolved</p>
-</a>
-
-
-  </div>
- <!-- Two smaller buttons centered -->
-  <div class="w-full flex justify-center mt-8">
-    <div class="grid grid-cols-2 gap-4 max-w-md">
-      <a href="http://100.88.152.64:30002/" class="rounded-xl bg-yellow-500 hover:bg-yellow-400 transition p-4 text-white shadow-md text-center text-sm font-semibold" target="_blank">
-        Overseerr Requests
-      </a>
-      <a href="https://discord.gg/your-invite-code" class="rounded-xl bg-indigo-500 hover:bg-indigo-400 transition p-4 text-white shadow-md text-center text-sm font-semibold" target="_blank">
-        Join Discord
-      </a>
+<body>
+    <div class="container">
+        <header class="hero">
+            <nav class="navbar">
+                <div class="nav-brand">
+                    <i class="fas fa-server"></i>
+                    <span>HomeLab Hub</span>
+                </div>
+                <div class="nav-actions">
+                    <button class="btn btn-outline" onclick="showLogin()">Login</button>
+                    <button class="btn btn-primary" onclick="showSignup()">Get Access</button>
+                </div>
+            </nav>
+            
+            <div class="hero-content">
+                <h1>Your Personal Cloud Ecosystem</h1>
+                <p class="hero-subtitle">Replace Netflix, Google Photos, HBO Max & more with your own private streaming and storage platform</p>
+                
+                <div class="value-prop">
+                    <div class="price-comparison">
+                        <div class="traditional-cost">
+                            <h3>Traditional Services</h3>
+                            <div class="service-cost">
+                                <span>Netflix: $17/mo</span>
+                                <span>HBO Max: $16/mo</span>
+                                <span>Google Photos: $10/mo</span>
+                                <span>Spotify: $11/mo</span>
+                            </div>
+                            <div class="total">Total: $54/month</div>
+                        </div>
+                        
+                        <div class="vs">VS</div>
+                        
+                        <div class="homelab-cost">
+                            <h3>HomeLab Hub</h3>
+                            <div class="service-benefits">
+                                <span><i class="fas fa-check"></i> Unlimited Movies & TV</span>
+                                <span><i class="fas fa-check"></i> Unlimited Photo Storage</span>
+                                <span><i class="fas fa-check"></i> Recipe Management</span>
+                                <span><i class="fas fa-check"></i> Secure Private Access</span>
+                            </div>
+                            <div class="total savings">Only: $15/month</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn btn-large btn-primary cta-button" onclick="showSignup()">
+                    Start Saving Today <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </header>
+        
+        <section class="services">
+            <h2>Available Services</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <h3>Plex Media Server</h3>
+                    <p>Stream movies, TV shows, and personal media anywhere. Better than Netflix with no ads!</p>
+                    <div class="service-features">
+                        <span>• 4K Streaming</span>
+                        <span>• Mobile & TV Apps</span>
+                        <span>• Request New Content</span>
+                    </div>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <h3>Immich Photos</h3>
+                    <p>Self-hosted Google Photos alternative with unlimited storage and complete privacy.</p>
+                    <div class="service-features">
+                        <span>• Unlimited Storage</span>
+                        <span>• AI Photo Search</span>
+                        <span>• Auto Backup</span>
+                    </div>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h3>Mealie Recipes</h3>
+                    <p>Organize recipes, plan meals, and manage your kitchen like a pro chef.</p>
+                    <div class="service-features">
+                        <span>• Recipe Organization</span>
+                        <span>• Meal Planning</span>
+                        <span>• Shopping Lists</span>
+                    </div>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Secure Access</h3>
+                    <p>Military-grade VPN access through Tailscale ensures your data stays private.</p>
+                    <div class="service-features">
+                        <span>• Zero-trust Security</span>
+                        <span>• Easy Setup</span>
+                        <span>• Always Connected</span>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
-  </div>
-</div>
-
-  <footer class="text-center mt-16 text-sm text-white/80">
-    <a href="https://your-announcements-link.com" class="hover:underline hover:text-white" target="_blank">View latest updates and announcements</a>
-  </footer>
+    
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            <h2>Login to HomeLab Hub</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="accessCode">Access Code</label>
+                    <input type="text" id="accessCode" required placeholder="Enter your access code">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Access Dashboard</button>
+            </form>
+            <p class="form-footer">Don't have an access code? <a href="#" onclick="showSignup()">Request access</a></p>
+        </div>
+    </div>
+    
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('signupModal')">&times;</span>
+            <h2>Request Access to HomeLab Hub</h2>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" required placeholder="Your full name">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" required placeholder="your.email@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="reason">Why do you want access?</label>
+                    <textarea id="reason" rows="3" placeholder="Tell us a bit about yourself and why you'd like to join..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Submit Request</button>
+            </form>
+            <p class="form-footer">Already have access? <a href="#" onclick="showLogin()">Login here</a></p>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
 </body>
-</html>
+</html> 
