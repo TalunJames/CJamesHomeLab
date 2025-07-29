@@ -28,6 +28,13 @@ const sampleUsers = [
 
 const adminCode = 'ADMIN2024';
 
+// Local Storage Keys
+const STORAGE_KEYS = {
+    users: 'homelabHub_users',
+    accessCodes: 'homelabHub_accessCodes',
+    dataVersion: 'homelabHub_dataVersion'
+};
+
 // Initialize app
 document.addEventListener('DOMContentLoaded', function() {
     loadSampleData();
@@ -35,12 +42,77 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function loadSampleData() {
+    // Check if we have saved data in localStorage
+    const savedUsers = localStorage.getItem(STORAGE_KEYS.users);
+    const savedAccessCodes = localStorage.getItem(STORAGE_KEYS.accessCodes);
+    
+    if (savedUsers && savedAccessCodes) {
+        // Load from localStorage
+        try {
+            users = JSON.parse(savedUsers);
+            accessCodes = JSON.parse(savedAccessCodes);
+            console.log('Loaded data from localStorage:', { userCount: users.length, codeCount: accessCodes.length });
+        } catch (error) {
+            console.error('Error loading data from localStorage:', error);
+            // Fall back to sample data
+            loadDefaultSampleData();
+        }
+    } else {
+        // First time - load sample data and save to localStorage
+        loadDefaultSampleData();
+        saveDataToStorage();
+    }
+}
+
+function loadDefaultSampleData() {
     users = [...sampleUsers];
     accessCodes = users.map(user => ({
         code: user.accessCode,
         userId: user.id,
         permissions: user.permissions
     }));
+}
+
+// Save data to localStorage
+function saveDataToStorage() {
+    try {
+        localStorage.setItem(STORAGE_KEYS.users, JSON.stringify(users));
+        localStorage.setItem(STORAGE_KEYS.accessCodes, JSON.stringify(accessCodes));
+        localStorage.setItem(STORAGE_KEYS.dataVersion, '1.0');
+        console.log('Data saved to localStorage successfully');
+    } catch (error) {
+        console.error('Error saving data to localStorage:', error);
+        // Show user-friendly error
+        showErrorMessage('Unable to save data. Your changes may not persist.');
+    }
+}
+
+// Clear all saved data (for reset functionality)
+function clearSavedData() {
+    localStorage.removeItem(STORAGE_KEYS.users);
+    localStorage.removeItem(STORAGE_KEYS.accessCodes);
+    localStorage.removeItem(STORAGE_KEYS.dataVersion);
+    console.log('Saved data cleared from localStorage');
+}
+
+// Reset all data to sample data
+function resetAllData() {
+    if (confirm('Are you sure you want to reset ALL data? This will delete all created users and access codes and return to the sample data only. This action cannot be undone.')) {
+        // Clear localStorage
+        clearSavedData();
+        
+        // Reload sample data
+        loadDefaultSampleData();
+        
+        // Save the sample data to localStorage
+        saveDataToStorage();
+        
+        // Refresh the admin panel
+        showAdminPanel();
+        
+        // Show success message
+        showSuccessMessage('All data has been reset to sample data');
+    }
 }
 
 function setupEventListeners() {
@@ -295,6 +367,16 @@ function createAdminPanel() {
                                 <p>Replacement value: <strong>$${users.length * 54}/month</strong></p>
                                 <p>Customer savings: <strong>$${users.length * 39}/month</strong></p>
                             </div>
+                            <div class="dashboard-card">
+                                <h3><i class="fas fa-database"></i> Data Management</h3>
+                                <p>All user data is automatically saved to your browser's local storage.</p>
+                                <button class="btn btn-danger" onclick="resetAllData()" style="margin-top: 1rem;">
+                                    <i class="fas fa-trash"></i> Reset All Data
+                                </button>
+                                <p style="font-size: 0.9rem; color: #7f8c8d; margin-top: 0.5rem;">
+                                    This will delete all users and access codes, returning to sample data only.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -537,6 +619,9 @@ function handleUserSubmit(event) {
             
             closeModal('userModal');
             
+            // Save to localStorage
+            saveDataToStorage();
+            
             // Update both users and codes sections
             refreshUsersSection();
             refreshCodesSection();
@@ -565,6 +650,9 @@ function handleUserSubmit(event) {
             permissions: formData.permissions
         });
         
+        // Save to localStorage
+        saveDataToStorage();
+        
         closeModal('userModal');
         
         // Update both users and codes sections instead of refreshing entire panel
@@ -583,6 +671,9 @@ function generateAccessCode() {
         userId: null,
         permissions: ['plex']
     });
+    
+    // Save to localStorage
+    saveDataToStorage();
     
     // Update codes section instead of refreshing entire panel
     refreshCodesSection();
@@ -783,6 +874,9 @@ function deleteUser(userId) {
         users = users.filter(u => u.id !== userId);
         accessCodes = accessCodes.filter(ac => ac.userId !== userId);
         
+        // Save to localStorage
+        saveDataToStorage();
+        
         // Update both sections instead of refreshing entire panel
         refreshUsersSection();
         refreshCodesSection();
@@ -795,6 +889,9 @@ function deleteUser(userId) {
 function revokeCode(code) {
     if (confirm('Are you sure you want to revoke this access code?')) {
         accessCodes = accessCodes.filter(ac => ac.code !== code);
+        
+        // Save to localStorage
+        saveDataToStorage();
         
         // Update codes section instead of refreshing entire panel
         refreshCodesSection();
@@ -822,13 +919,23 @@ function refreshCodesSection() {
 
 // New function to show success messages
 function showSuccessMessage(message) {
-    // Create success notification element
+    showNotification(message, '#27ae60');
+}
+
+// New function to show error messages
+function showErrorMessage(message) {
+    showNotification(message, '#e74c3c');
+}
+
+// Generic notification function
+function showNotification(message, backgroundColor) {
+    // Create notification element
     const notification = document.createElement('div');
     notification.style.cssText = `
         position: fixed;
         top: 20px;
         right: 20px;
-        background: #27ae60;
+        background: ${backgroundColor};
         color: white;
         padding: 1rem 1.5rem;
         border-radius: 8px;
