@@ -506,6 +506,7 @@ function setupAdminEventListeners() {
 function showCreateUserModal() {
     document.getElementById('userModalTitle').textContent = 'Create User';
     document.getElementById('userForm').reset();
+    window.editingUserId = null; // Clear editing state
     document.getElementById('userModal').style.display = 'block';
 }
 
@@ -518,24 +519,61 @@ function handleUserSubmit(event) {
         permissions: Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value)
     };
     
-    const accessCode = generateRandomCode();
-    const newUser = {
-        id: users.length + 1,
-        ...formData,
-        accessCode,
-        joinDate: new Date().toISOString().split('T')[0],
-        billing: 'active'
-    };
-    
-    users.push(newUser);
-    accessCodes.push({
-        code: accessCode,
-        userId: newUser.id,
-        permissions: formData.permissions
-    });
-    
-    closeModal('userModal');
-    showAdminPanel(); // Refresh admin panel
+    if (window.editingUserId) {
+        // Edit existing user
+        const userIndex = users.findIndex(u => u.id === window.editingUserId);
+        if (userIndex !== -1) {
+            const oldUser = users[userIndex];
+            users[userIndex] = {
+                ...oldUser,
+                ...formData
+            };
+            
+            // Update access code permissions
+            const codeIndex = accessCodes.findIndex(ac => ac.userId === window.editingUserId);
+            if (codeIndex !== -1) {
+                accessCodes[codeIndex].permissions = formData.permissions;
+            }
+            
+            closeModal('userModal');
+            
+            // Update both users and codes sections
+            refreshUsersSection();
+            refreshCodesSection();
+            
+            // Show success message
+            showSuccessMessage(`User ${formData.name} updated successfully!`);
+        }
+        
+        // Clear editing state
+        window.editingUserId = null;
+    } else {
+        // Create new user
+        const accessCode = generateRandomCode();
+        const newUser = {
+            id: users.length + 1,
+            ...formData,
+            accessCode,
+            joinDate: new Date().toISOString().split('T')[0],
+            billing: 'active'
+        };
+        
+        users.push(newUser);
+        accessCodes.push({
+            code: accessCode,
+            userId: newUser.id,
+            permissions: formData.permissions
+        });
+        
+        closeModal('userModal');
+        
+        // Update both users and codes sections instead of refreshing entire panel
+        refreshUsersSection();
+        refreshCodesSection();
+        
+        // Show success message with the new access code
+        showSuccessMessage(`User ${newUser.name} created successfully! Access code: ${accessCode}`);
+    }
 }
 
 function generateAccessCode() {
@@ -545,7 +583,12 @@ function generateAccessCode() {
         userId: null,
         permissions: ['plex']
     });
-    showAdminPanel(); // Refresh admin panel
+    
+    // Update codes section instead of refreshing entire panel
+    refreshCodesSection();
+    
+    // Show success message
+    showSuccessMessage(`New access code generated: ${code}`);
 }
 
 function generateRandomCode() {
@@ -718,6 +761,9 @@ function editUser(userId) {
     const user = users.find(u => u.id === userId);
     if (!user) return;
     
+    // Store the user ID being edited
+    window.editingUserId = userId;
+    
     // Populate form with user data
     document.getElementById('userModalTitle').textContent = 'Edit User';
     document.getElementById('userName').value = user.name;
@@ -733,15 +779,93 @@ function editUser(userId) {
 
 function deleteUser(userId) {
     if (confirm('Are you sure you want to delete this user?')) {
+        const user = users.find(u => u.id === userId);
         users = users.filter(u => u.id !== userId);
         accessCodes = accessCodes.filter(ac => ac.userId !== userId);
-        showAdminPanel(); // Refresh
+        
+        // Update both sections instead of refreshing entire panel
+        refreshUsersSection();
+        refreshCodesSection();
+        
+        // Show success message
+        showSuccessMessage(`User ${user ? user.name : ''} deleted successfully`);
     }
 }
 
 function revokeCode(code) {
     if (confirm('Are you sure you want to revoke this access code?')) {
         accessCodes = accessCodes.filter(ac => ac.code !== code);
-        showAdminPanel(); // Refresh
+        
+        // Update codes section instead of refreshing entire panel
+        refreshCodesSection();
+        
+        // Show success message
+        showSuccessMessage(`Access code ${code} revoked successfully`);
     }
+} 
+
+// New function to refresh just the users section
+function refreshUsersSection() {
+    const usersSection = document.querySelector('#users-section .user-list');
+    if (usersSection) {
+        usersSection.innerHTML = users.map(user => createUserItem(user)).join('');
+    }
+}
+
+// New function to refresh just the codes section  
+function refreshCodesSection() {
+    const codesSection = document.querySelector('#codes-section .user-list');
+    if (codesSection) {
+        codesSection.innerHTML = accessCodes.map(code => createCodeItem(code)).join('');
+    }
+}
+
+// New function to show success messages
+function showSuccessMessage(message) {
+    // Create success notification element
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #27ae60;
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 1000;
+        font-weight: 500;
+        max-width: 400px;
+        animation: slideIn 0.3s ease-out;
+    `;
+    notification.textContent = message;
+    
+    // Add animation keyframes if not already added
+    if (!document.querySelector('#successAnimations')) {
+        const style = document.createElement('style');
+        style.id = 'successAnimations';
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    document.body.appendChild(notification);
+    
+    // Auto remove after 4 seconds
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }, 4000);
 } 
